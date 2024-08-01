@@ -29,7 +29,13 @@ export class AuthController {
       .register(registerUserDto!)
       .then((user) => res.json(user))
       .catch((error) => this.handleError(error, res));
+  };
 
-    // res.json(registerUserDto);
+  // Get all Users
+  getUsers = (req: Request, res: Response) => {
+    this.authRepository
+      .getUsers()
+      .then((users) => res.json(users))
+      .catch((error) => this.handleError(error, res));
   };
 }

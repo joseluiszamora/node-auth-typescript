@@ -26,6 +26,25 @@ export class AuthDataSourceImpl implements AuthDataSource {
     private readonly comparePassword: CompareFunction = BcryptAdapter.compare
   ) {}
 
+  async getUsers(): Promise<Array<UserEntity>> {
+    try {
+      const users = await prisma.user.findMany();
+
+      var usersList = Array<UserEntity>();
+
+      for (const user of users) {
+        usersList.push(UserMapper.userEntityFromObject(user));
+      }
+
+      return usersList;
+    } catch (error) {
+      if (error instanceof CustomError) {
+        throw error;
+      }
+      throw CustomError.internalServer();
+    }
+  }
+
   async register(registerUserDto: RegisterUserDto): Promise<UserEntity> {
     const {
       fk_profile,

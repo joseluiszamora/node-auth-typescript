@@ -6,4 +6,6 @@ export abstract class AuthDataSource {
   // abstract login();
 
   abstract register(registerUserDto: RegisterUserDto): Promise<UserEntity>;
+
+  abstract getUsers(): Promise<Array<UserEntity>>;
 }

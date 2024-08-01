@@ -2,16 +2,14 @@ import { Validators } from "../../../config";
 
 export class RegisterUserDto {
   private constructor(
-    public fk_profile: string,
+    public fk_profile: number,
     public document: string,
     public email: string,
     public password: string,
     public first_name: string,
     public last_name: string,
-    public avatar: string // public logins: string, // public last_login: string, // public is_active: string, // public created_by: string, // public updated_by: string, // public deleted_by: string,
-  ) // public is_cashier: boolean,
-  // public is_superviser: boolean
-  {}
+    public avatar: string // public logins: string, // public last_login: string, // public is_active: string, // public created_by: string, // public updated_by: string, // public deleted_by: string, // public is_cashier: boolean, // public is_superviser: boolean
+  ) {}
 
   static create(object: { [key: string]: any }): [string?, RegisterUserDto?] {
     const {
@@ -34,9 +32,7 @@ export class RegisterUserDto {
 
     if (!fk_profile) return ["Missing fk_profile", undefined];
     if (!document) return ["Missing document", undefined];
-    // validate email
     if (!Validators.email.test(email)) return ["Email is not valid", undefined];
-    // validate password
     if (!password) return ["Missing password", undefined];
     if (password.length < 6) return ["Password too short", undefined];
     if (!first_name) return ["Missing first_name", undefined];

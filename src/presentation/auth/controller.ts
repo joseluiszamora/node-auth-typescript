@@ -1,10 +1,19 @@
 import { Request, Response } from "express";
-import { RegisterUserDto } from "../../domain";
+import { CustomError, RegisterUserDto } from "../../domain";
 import { AuthRepository } from "../../domain/repositories/auth.repository";
 
 export class AuthController {
   // Inyeccion de dependencias
   constructor(private readonly authRepository: AuthRepository) {}
+
+  private handleError = (error: unknown, res: Response) => {
+    if (error instanceof CustomError) {
+      return res.status(error.statusCode).json({ error: error.message });
+    }
+
+    console.log(error); // Winston
+    return res.status(500).json({ error: "Internal Server Error" });
+  };
 
   // login User
   loginUser = (req: Request, res: Response) => {
@@ -19,7 +28,7 @@ export class AuthController {
     this.authRepository
       .register(registerUserDto!)
       .then((user) => res.json(user))
-      .catch((error) => res.status(500).json(error));
+      .catch((error) => this.handleError(error, res));
 
     // res.json(registerUserDto);
   };

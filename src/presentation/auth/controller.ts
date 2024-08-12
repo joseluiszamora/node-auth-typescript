@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { CustomError, RegisterUserDto } from "../../domain";
+import { CustomError, RegisterUser, RegisterUserDto } from "../../domain";
 import { AuthRepository } from "../../domain/repositories/auth.repository";
+import { JwtAdapter } from "../../config";
 
 export class AuthController {
   // Inyeccion de dependencias
@@ -25,10 +26,21 @@ export class AuthController {
     const [error, registerUserDto] = RegisterUserDto.create(req.body);
 
     if (error) return res.status(400).json({ error });
-    this.authRepository
-      .register(registerUserDto!)
-      .then((user) => res.json(user))
+
+    new RegisterUser(this.authRepository)
+      .execute(registerUserDto!)
+      .then((data) => res.json(data))
       .catch((error) => this.handleError(error, res));
+
+    // this.authRepository
+    //   .register(registerUserDto!)
+    //   .then(async (user) =>
+    //     res.json({
+    //       user,
+    //       token: await JwtAdapter.generateToken({ id: user.id }),
+    //     })
+    //   )
+    //   .catch((error) => this.handleError(error, res));
   };
 
   // Get all Users

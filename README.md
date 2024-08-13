@@ -46,7 +46,7 @@ Tranforma la data que recibimos en la data que necesitamos, como ser un objeto e
 
 ### REPOSITORIES
 
-Son un puente entre nuestro código con el datasource, para evitar que cuando haya un cambio en el DATASOURCe tengamo que modificar distintas partes de nuestro código.
+Son un puente (una abstracción) entre nuestro código con el datasource, para evitar que cuando haya un cambio en el DATASOURCe tengamo que modificar distintas partes de nuestro código.
 
 ## PRESENTATION
 

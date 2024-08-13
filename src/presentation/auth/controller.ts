@@ -1,7 +1,12 @@
 import { Request, Response } from "express";
-import { CustomError, RegisterUser, RegisterUserDto } from "../../domain";
-import { AuthRepository } from "../../domain/repositories/auth.repository";
-import { JwtAdapter } from "../../config";
+import {
+  AuthRepository,
+  CustomError,
+  LoginUser,
+  LoginUserDto,
+  RegisterUser,
+  RegisterUserDto,
+} from "../../domain";
 
 export class AuthController {
   // Inyeccion de dependencias
@@ -18,7 +23,13 @@ export class AuthController {
 
   // login User
   loginUser = (req: Request, res: Response) => {
-    res.json("login user controller");
+    const [error, loginUserDto] = LoginUserDto.create(req.body);
+    if (error) return res.status(400).json({ error });
+
+    new LoginUser(this.authRepository)
+      .execute(loginUserDto!)
+      .then((data) => res.json(data))
+      .catch((error) => this.handleError(error, res));
   };
 
   // register User

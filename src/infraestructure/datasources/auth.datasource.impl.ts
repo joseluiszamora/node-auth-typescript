@@ -5,6 +5,7 @@ import { BcryptAdapter } from "../../config";
 import {
   AuthDataSource,
   CustomError,
+  LoginUserDto,
   RegisterUserDto,
   UserEntity,
 } from "../../domain";
@@ -25,6 +26,25 @@ export class AuthDataSourceImpl implements AuthDataSource {
     private readonly hashPassword: HashFunction = BcryptAdapter.hash,
     private readonly comparePassword: CompareFunction = BcryptAdapter.compare
   ) {}
+
+  async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
+    const { email, password } = loginUserDto;
+
+    try {
+      const user = await prisma.user.findUnique({ where: { email } });
+      if (!user) throw CustomError.badRequest("User does not exists - email");
+
+      const isMatching = this.comparePassword(password, user.password);
+      if (!isMatching) throw CustomError.badRequest("Password is not valid");
+
+      return UserMapper.userEntityFromObject(user);
+    } catch (error) {
+      if (error instanceof CustomError) {
+        throw error;
+      }
+      throw CustomError.internalServer();
+    }
+  }
 
   async getUsers(): Promise<Array<UserEntity>> {
     try {
